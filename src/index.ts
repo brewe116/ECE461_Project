@@ -8,12 +8,12 @@ const arrayToNdjson = require('array-to-ndjson');
 
 interface SCORE_OUT {
   URL: string;
-  NetScore: number;
-  RampUp: number;
-  Correctness: number;
-  BusFactor: number;
-  ResponsiveMaintainer: number;
-  License: number;
+  NET_SCORE: number;
+  RAMP_UP_SCORE: number;
+  CORRECTNESS_SCORE: number;
+  BUS_FACTOR_SCORE: number;
+  RESPONSIVE_MAINTAINER_SCORE: number;
+  LICENSE_SCORE: number;
 }
 
 //get_license_score('git@github.com:davglass/license-checker.git').then(
@@ -25,11 +25,11 @@ interface SCORE_OUT {
 function net_score_formula(subscores: SCORE_OUT): number {
   // prettier-ignore
   const net_score: number =
-  subscores.License * (
-    (subscores.RampUp) +
-    (subscores.Correctness) +
-    (subscores.BusFactor * 0.6) +
-    (subscores.ResponsiveMaintainer * 0.4)
+  subscores.LICENSE_SCORE * (
+    (subscores.RAMP_UP_SCORE) +
+    (subscores.CORRECTNESS_SCORE) +
+    (subscores.BUS_FACTOR_SCORE * 0.6) +
+    (subscores.RESPONSIVE_MAINTAINER_SCORE * 0.4)
   );
   return net_score;
 }
@@ -46,12 +46,12 @@ async function main() {
     async (url_parse: URL_PARSE) => {
       const score: SCORE_OUT = {
         URL: url_parse.original_url, // SHOULD THIS BE ORIGINAL?
-        NetScore: 0,
-        RampUp: 0,
-        Correctness: 0,
-        BusFactor: 0,
-        ResponsiveMaintainer: 0,
-        License: 0,
+        NET_SCORE: 0,
+        RAMP_UP_SCORE: 0,
+        CORRECTNESS_SCORE: 0,
+        BUS_FACTOR_SCORE: 0,
+        RESPONSIVE_MAINTAINER_SCORE: 0,
+        LICENSE_SCORE: 0,
       };
       const license_sub_score = get_license_score(url_parse.github_repo_url);
       const bus_factor_sub_score = get_bus_factor_score(
@@ -61,12 +61,12 @@ async function main() {
         url_parse.github_repo_url
       );
 
-      score.License = await license_sub_score;
-      score.BusFactor = Number((await bus_factor_sub_score).toFixed(3));
-      score.ResponsiveMaintainer = Number(
+      score.LICENSE_SCORE = await license_sub_score;
+      score.BUS_FACTOR_SCORE = Number((await bus_factor_sub_score).toFixed(3));
+      score.RESPONSIVE_MAINTAINER_SCORE = Number(
         (await responsiveness_sub_score).toFixed(2)
       );
-      score.NetScore = net_score_formula(score);
+      score.NET_SCORE = net_score_formula(score);
 
       return score;
     }

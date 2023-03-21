@@ -23,7 +23,7 @@ export async function clone_and_install(
     }
     return false;
   }
-  try {
+  /*try {
     const npm_out = await run_cmd('npm', ['install', '--omit=dev'], {
       cwd: join(tmp_dir, git_folder_name),
     });
@@ -33,7 +33,7 @@ export async function clone_and_install(
       globalThis.logger.error(`Error while npm install: ${err.message}`);
     }
     return false;
-  }
+  }*/
   return true;
 }
 
